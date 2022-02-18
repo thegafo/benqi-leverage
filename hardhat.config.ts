@@ -40,13 +40,23 @@ task("balances", "Prints the list of AVAX account balances", async (args, hre): 
 
 export default {
   solidity: {
-    version: "0.8.4",
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 1000,
+    compilers: [
+      {
+        version: "0.8.4",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1000,
+          },
+        },
       },
-    },
+      {
+        version: "0.5.17"
+      },
+      {
+        version: "0.6.12"
+      },
+    ]
   },
   networks: {
     hardhat: {

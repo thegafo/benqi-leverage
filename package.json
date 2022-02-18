@@ -32,6 +32,7 @@
     "pretest": "yarn compile",
     "test": "npx hardhat test",
     "deploy": "npx hardhat run scripts/deploy.ts",
+    "deploy:farmer": "npx hardhat run scripts/deploy-yield-farmer.ts",
     "erc20": "npx hardhat run scripts/erc20.ts",
     "nft": "npx hardhat run scripts/nft.ts --network mainnet",
     "storage": "npx hardhat run scripts/storage.ts",
