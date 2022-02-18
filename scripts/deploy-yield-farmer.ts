@@ -8,8 +8,8 @@ import constants from '../constants';
 const main = async(): Promise<any> => {
 
   const comptrollerAddress = constants.testnet.Comptroller;
-  const tokenAddress = constants.testnet.QiAVAX;
-  const underlyingAddress = constants.testnet.AVAX;
+  const tokenAddress = constants.testnet.QiLINK;
+  const underlyingAddress = constants.testnet.LINK;
   const collateralFactor = 50;
 
   const YieldFarmer: ContractFactory = await ethers.getContractFactory("YieldFarmer")

@@ -2,6 +2,7 @@
 pragma solidity >=0.8.2;
 
 interface IQiToken {
+  function underlying() external view returns (address);
   function mint(uint mintAmount) external returns (uint);
   function redeem(uint redeemTokens) external returns (uint);
   function borrow(uint borrowAmount) external returns (uint);

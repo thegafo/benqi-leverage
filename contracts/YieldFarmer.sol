@@ -33,11 +33,11 @@ contract YieldFarmer is Ownable {
   function openPosition(uint initialAmount, uint256 leverage) external onlyOwner {
     uint nextCollateralAmount = initialAmount;
     for(uint i = 0; i < leverage; i++) {
-      nextCollateralAmount = _supplyAndBorrow(nextCollateralAmount);
+      nextCollateralAmount = this._supplyAndBorrow(nextCollateralAmount);
     }
   }
 
-  function _supplyAndBorrow(uint collateralAmount) internal returns(uint) {
+  function _supplyAndBorrow(uint collateralAmount) external returns(uint) {
     underlying.approve(address(qiToken), collateralAmount);
     qiToken.mint(collateralAmount);
     uint borrowAmount = (collateralAmount * collateralFactor) / 100;
@@ -53,21 +53,30 @@ contract YieldFarmer is Ownable {
     qiToken.redeem(balanceQiToken);
   }
 
-  function borrowBalance(address _address) external returns (uint256) {
-    return qiToken.borrowBalanceCurrent(_address);
+  function borrowBalance() external returns (uint256) {
+    return qiToken.borrowBalanceCurrent(address(this));
   }  
   
-  function borrowBalanceStored(address _address) external returns (uint256) {
-    return qiToken.borrowBalanceStored(_address);
+  function borrowBalanceStored() external view returns (uint256) {
+    return qiToken.borrowBalanceStored(address(this));
   }
 
-  function balanceOf(address _address) external view returns (uint256) {
-    return qiToken.balanceOf(_address);
+  function underlyingBalance() external view returns (uint256) {
+    return underlying.balanceOf(address(this));
+  }  
+
+  function balanceOf() external view returns (uint256) {
+    return qiToken.balanceOf(address(this));
   }
 
-  function balanceOfUnderlying(address _address) external view returns (uint256) {
-    return qiToken.balanceOfUnderlying(_address);
+  function balanceOfUnderlying() external view returns (uint256) {
+    return qiToken.balanceOfUnderlying(address(this));
   }
+
+  function getAccountLiquidity() public view returns (uint, uint, uint) {
+    return comptroller.getAccountLiquidity(address(this));
+  }
+
 
   function rates() external view returns (uint256, uint256) {
     return (
@@ -76,5 +85,25 @@ contract YieldFarmer is Ownable {
     );
   }
 
+  function getUnderlying(address _address) external view returns (address) {
+    IQiToken _qiToken = IQiToken(_address);
+    return _qiToken.underlying();
+  }
+
+  function rates(address _address) external view returns (uint256, uint256) {
+    IQiToken _qiToken = IQiToken(_address);
+    return (
+      _qiToken.supplyRatePerTimestamp(),      
+      _qiToken.borrowRatePerTimestamp()
+    );
+  }
+
+  function withdraw(uint256 amount) external onlyOwner {
+    underlying.transfer(msg.sender, amount);
+  }
+
+  function drain() external onlyOwner {
+    underlying.transfer(msg.sender, this.underlyingBalance());
+  }
 
 }
